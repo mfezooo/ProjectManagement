@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/*.user
+**/*.suo
+**/TestResults/
+**/node_modules/
+**/.git/
+**/.gitignore
+**/Dockerfile*
+**/docker-compose*.yml
+**/*.md
+**/logs/
+**/coverage/

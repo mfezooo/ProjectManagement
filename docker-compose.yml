@@ -1,0 +1,58 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ProjectManagement.API/Dockerfile
+    image: projectmanagement-api:latest
+    container_name: projectmanagement-api
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=ProjectManagementDb;User Id=sa;Password=Your_strong_Password123!;TrustServerCertificate=True;Encrypt=False;"
+      ConnectionStrings__Redis: "redis:6379"
+      JwtSettings__Secret: "REPLACE_WITH_AT_LEAST_32_CHARACTERS_LONG_KEY_VALUE"
+      JwtSettings__Issuer: "ProjectManagementAPI"
+      JwtSettings__Audience: "ProjectManagementAPIUsers"
+      JwtSettings__ExpirationMinutes: "60"
+      EnableSwaggerInProduction: "true"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: projectmanagement-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "Your_strong_Password123!"
+      SA_PASSWORD: "Your_strong_Password123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: projectmanagement-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  mssql_data:
+  redis_data:
