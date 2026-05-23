@@ -84,7 +84,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 
 try
 {

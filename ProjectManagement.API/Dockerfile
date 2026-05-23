@@ -16,7 +16,7 @@ RUN dotnet restore ProjectManagement.API/ProjectManagement.API.csproj
 COPY ProjectManagement.Domain/ ProjectManagement.Domain/
 COPY ProjectManagement.Application/ ProjectManagement.Application/
 COPY ProjectManagement.Infrastructure/ ProjectManagement.Infrastructure/
-COPY ProjectManagement.API/ ProjectManagement.API/ 
+COPY ProjectManagement.API/ ProjectManagement.API/
 
 RUN dotnet publish ProjectManagement.API/ProjectManagement.API.csproj \
     -c Release \
